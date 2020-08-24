@@ -1,0 +1,621 @@
+print("==========================================================");
+print("Copyright(C) 2009 by bao qian Liu,E_mail:wshr987@163.com ");
+print("==========================================================");
+
+print("if Inequality forms is a>=b,first run auto(a-b), then run agl(w1) or agl(-w1).");
+
+#################3#######################################
+#����ж��ɹ�����outs����ɾ�������ɹ�����outs��������ʧЧ�������飻
+###############################################################
+agl:=proc(ineq)
+local i,temp,temp1,temp2,tj,sj,sjtemp;
+global outs;
+sj:=time():
+if nops([args])=1 then tj:=z^2-1/2*m*(m+n) end if;
+if nops([args])=2 and {op(args[2])}={} then tj:=z^2-1/2*m*(m+n) end if;
+if nops([args])=2 and op(args[2])=aa then tj:=4*z^2-2*sqrt(2)*(-sqrt(2)*m+2*n+m)*z-sqrt(2)*(2*m+n)*(m+n) end if;
+print(`The (a,b,c) into (x,y,z)`);
+
+temp:=atox(args[1]);
+print(`                        time is:`,time()-sj);
+sjtemp:=time();
+
+print(`Be running sds`);
+outs:={};
+temp1:=sds(temp);
+
+for i from 1 to nops(temp1) do
+outs:=outs union {[collect(temp1[i],z,factor),tj]} od;
+
+print(`                        time is:`,time()-sjtemp);
+sjtemp:=time();
+print(`Begin prove`);
+temp2:={};
+while temp1<>{} do 
+temp1:=div(temp1,tj);
+for i from 1 to nops(temp1) do 
+if degree(temp1[i],z)<2 then 
+temp2:=temp2 union {temp1[i]};
+end if;
+od;
+temp1:=temp1 minus temp2;
+end do;
+if temp2={} then 
+print(`                        time is:`,time()-sjtemp);
+print(`The inequality holds.`); 
+print(`                        total time is:`,time()-sj);
+unassign('outs');
+return;
+end if;
+temp1:={};
+for i from 1 to nops(temp2) do
+temp1:=temp1 union {coeffs(temp2[i],z)} od;
+temp2:=gtmns(temp1);
+print(temp2);
+lprint(`The end of the first testing,outs number is:`,nops(outs));
+lprint(`-------------`);
+lprint(`try run sdsd(outs),or w1 multiplied by Non-negative polynomial...`);
+lprint(`-------------`);
+lprint(`Start a second testing,please wait...`);
+
+outs:=sdsd(outs);
+
+if outs={} then unassign('outs');
+print(`                        time is:`,time()-sjtemp);
+print(`                        total time is:`,time()-sj);
+return end if;
+
+test(outs);
+print(`                        time is:`,time()-sjtemp);
+print(`                        total time is:`,time()-sj);
+end:
+
+
+div:=proc(g,cond)
+local temp,sq,i;
+temp:={};
+for i from 1 to nops(g) do 
+sq:=expand(quo(g[i],cond,z));
+if has(-1,map(signum,[coeffs(sq)]))  then temp:=temp union {sq} end if;
+sq:=expand(rem(g[i],cond,z));
+if has(-1,map(signum,[coeffs(sq)]))  then temp:=temp union {sq} end if;
+od;
+print(nops(temp));
+return temp;
+end:
+
+
+
+###################33
+#######################
+
+atox:=proc(g)
+local temp;
+temp:=expand(subs(a=y+z,b=z+x,c=x+y,g));
+return temp;
+end:
+xtoa:=proc(g)
+local temp;
+temp:=expand(subs(x=s-a,y=s-b,z=s-c,s=1/2*(a+b+c),g));
+return temp;
+end:
+
+sds:=proc(g)
+local f,temp;
+print(-1);
+f:=unapply(g,op(indets(g)));
+temp:=expand({f(m+z,m+n+z,z), f(m+n+z,z,m+z), f(z,m+z,m+n+z), f(z,m+n+z,m+z), f(m+z,z,m+n+z), f(m+n+z,m+z,z)});
+return gtmns(temp);
+end:
+
+gtmns:=proc(g)
+local temp,i;
+temp:={};
+print(-1);
+for i from 1 to nops(g) do
+if has(-1,map(signum,[coeffs(expand(g[i]))])) then 
+temp:=temp union {g[i]} end if;
+od;
+return temp;
+end:
+
+auto:=proc(g)
+local temp;
+global w1,w2;
+pblc();
+subs(lst0,g):
+subs(lsta,%):
+subs(lst,%):
+subs(rs,%):
+subs(rs,%):
+subs(rs,%):
+temp:=factor(%):
+w1:=numer(temp):
+w2:=denom(temp):
+
+if w1=0 then lprint("The Inequality may be an identity!");return end if;
+
+lprint(w1);
+lprint(`-----------------`);
+lprint(w2);
+lprint(`==================== `);
+w1:=delfact(delfact(w1));
+w2:=delfact(delfact(w2));
+w1:=ifsqrt(w1);
+w2:=ifsqrt(w2);
+
+
+lprint(`===================`);
+lprint(`w1:`,w1);
+lprint(`w1 degree is:`,degree(w1));
+lprint(`------------------`);
+lprint(`w2:`,w2);
+lprint(`w2 degree is:`,degree(w2));
+
+if type(evalf(w2),'float') and sign(evalf(w2))=1 then lprint("you only run agl(w1),if Inequality forms is a>=b") end if;
+if type(evalf(w2),'float') and sign(evalf(w2))=-1 then lprint("you only run agl(-w1),if Inequality forms is a>=b") end if;
+if not type(evalf(w2),'float') then lprint("you must  run agl(w1) or agl(-w1),good Lucky to you!") end if;
+end:
+
+ifsqrt:=proc(expr)
+op(expr)[2];
+if irem(op(expr)[2],2)=0 then return 1 end if;
+return expr;
+end:
+
+
+sgm:=proc(expr)
+   local rap,ex2,ex3,ex:
+      rap:={x1=x2,x2=x3,x3=x1,a=b,b=c,c=a,A=B,B=C,C=A,x=y,y=z,z=x,u=v,v=w,w=u,ha=hb,hb=hc,hc=ha,Ra=Rb,Rb=Rc,Rc=Ra,ra=rb,rb=rc,rc=ra,ma=mb,mb=mc,mc=ma,wa=wb,wb=wc,wc=wa,ka=kb,kb=kc,kc=ka,
+         HA=HB,HB=HC,HC=HA,IA=IB,IB=IC,
+         IC=IA,Ha=Hb,Hb=Hc,Hc=Ha,A=B,B=C,C=A,Ra=Rb,Rb=Rc,Rc=Ra,GA=GB,GB=GC,
+         GC=GA,JA=JB,JB=JC,JC=JA,ca=cb,cb=cc,cc=ca,Ja=Jb,Jb=Jc,Jc=Ja}:     
+   ex2:=subs(rap,expr):
+   ex3:=subs(rap,ex2):
+   ex:=expr+ex2+ex3:
+   RETURN(ex)
+end:
+
+
+pblc:=proc()
+global lsta,lst,rs,lst0,qht;
+
+lst0:=[
+tan(A/2)=r/(s-a),
+tan(B/2)=r/(s-b),
+tan(C/2)=r/(s-c),
+cot(A/2)=(s-a)/r,
+cot(B/2)=(s-b)/r,
+cot(C/2)=(s-c)/r,
+sin(2*A)=2*sin(A)*cos(A),
+sin(2*B)=2*sin(B)*cos(B),
+sin(2*C)=2*sin(C)*cos(C)];
+
+lst:=[S=s*r,
+ma=1/2*sqrt(2*b^2+2*c^2-a^2), 
+mb=1/2*sqrt(2*c^2+2*a^2-b^2), 
+mc=1/2*sqrt(2*a^2+2*b^2-c^2),
+sin(A)=1/2*a/R, sin(B)=1/2*b/R, sin(C)=1/2*c/R,
+cos(A)=1/2*(b^2+c^2-a^2)/b/c, 
+cos(B)=1/2*(-b^2+a^2+c^2)/c/a, 
+cos(C)=1/2*(b^2+a^2-c^2)/a/b,
+sin(1/2*A)=sqrt((s-b)*(s-c)/b/c),
+sin(1/2*B)=sqrt((s-c)*(s-a)/c/a),
+sin(1/2*C)=sqrt((s-a)*(s-b)/a/b),
+cos(1/2*A)=sqrt(s*(s-a)/b/c),
+cos(1/2*B)=sqrt(s*(s-b)/c/a),
+cos(1/2*C)=sqrt(s*(s-c)/a/b),
+ha=2*s*r/a, hb=2*s*r/b, hc=2*s*r/c,
+wa=2/(b+c)*(b*c*s*(s-a))^(1/2), 
+wb=2/(c+a)*(c*a*s*(s-b))^(1/2), 
+wc=2/(a+b)*(a*b*s*(s-c))^(1/2),
+ra=r*s/(s-a), rb=r*s/(s-b), rc=r*s/(s-c)];
+
+lsta:=[S=16*R^2*sin(A)*sin(B)*sin(C)*cos(A)*cos(B)*cos(C),
+sin(A)=2*sin(A)*cos(A),
+sin(B)=2*sin(B)*cos(B),
+sin(C)=2*sin(C)*cos(C),
+cos(A)=-(2*cos(A)^2-1),
+cos(B)=-(2*cos(B)^2-1),
+cos(C)=-(2*cos(C)^2-1),
+s=4*R*sin(A)*sin(B)*sin(C),
+sin(1/2*A) = cos(A),
+sin(1/2*B) = cos(B),
+sin(1/2*C) = cos(C),
+cos(1/2*A) = sin(A),
+cos(1/2*B) = sin(B), 
+cos(1/2*C) = sin(C),
+ra=4*R*sin(B)*sin(C)*cos(A), 
+rb=4*R*sin(C)*sin(A)*cos(B), 
+rc=4*R*sin(A)*sin(B)*cos(C),
+r=4*R*cos(A)*cos(B)*cos(C),
+ha=8*R*sin(B)*sin(C)*cos(B)*cos(C), 
+hb=8*R*sin(C)*sin(A)*cos(C)*cos(A), 
+hc=8*R*sin(A)*sin(B)*cos(A)*cos(B),
+wa=8*R*sin(B)*sin(C)*cos(B)*cos(C)/(2*ha^2/wa^2-1),
+wb=8*R*sin(C)*sin(A)*cos(C)*cos(A)/(2*hb^2/wb^2-1), 
+wc=8*R*sin(A)*sin(B)*cos(A)*cos(B)/(2*hc^2/wc^2-1),
+ma=2*sqrt(R^2*(2*sin(B)^2*cos(B)^2+2*sin(C)^2*cos(C)^2-sin(A)^2*cos(A)^2)),
+mb=2*sqrt(R^2*(2*sin(C)^2*cos(C)^2+2*sin(A)^2*cos(A)^2-sin(B)^2*cos(B)^2)), 
+mc=2*sqrt(R^2*(2*sin(A)^2*cos(A)^2+2*sin(B)^2*cos(B)^2-sin(C)^2*cos(C)^2)),
+a=4*R*sin(A)*cos(A), 
+b=4*R*sin(B)*cos(B), 
+c=4*R*sin(C)*cos(C)];
+
+rs:=[R=a*b*c/(4*s*r),
+r=sqrt(s*(s-a)*(s-b)*(s-c))/s,
+s=1/2*(a+b+c)];
+
+qht:=[a=2*x,b=1,c=1,
+sin(A)=2*x*sqrt(1-x^2),
+sin(B)=sqrt(1-x^2),
+sin(C)=sqrt(1-x^2),
+ha=sqrt(1-x^2),
+hb=2*x*sqrt(1-x^2),
+hc=2*x*sqrt(1-x^2),
+ma=sqrt(1-x^2),
+mb=1/2*sqrt(8*x^2+1),
+mc=1/2*sqrt(8*x^2+1),
+wa=sqrt(1-x^2),
+wb=2*x/(1+2*x)*sqrt(2*(1+x)),
+wc=2*x/(1+2*x)*sqrt(2*(1+x)),
+S=x*sqrt(1-x^2),
+s=1+x,
+s-a=1-x,
+s-b=1-x,
+s-c=1-x,
+r=x*sqrt(1-x^2)/(1+x),
+R=1/(2*sqrt(1-x^2)),
+ra=x*sqrt(1-x^2)/(1-x),
+rb=sqrt(1-x^2),
+rc=sqrt(1-x^2),
+sin(A/2)=x,
+sin(B/2)=1/2*sqrt(2*(1-x)),
+sin(C/2)=1/2*sqrt(2*(1-x)),
+cos(A)=1-2*x^2,
+cos(B)=x,cos(C)=x,
+cos(A/2)=sqrt(1-x^2),
+cos(B/2)=1/2*sqrt(2+2*x),
+cos(C/2)=1/2*sqrt(2+2*x)];
+end:
+pblc():
+
+eeq:=proc(g,expr)
+local i,temp1;
+global temp2;
+temp1:=subs(lst,g);
+temp1:=subs(rs,temp1);
+temp1:=subs(rs,temp1);
+temp1:=subs(rs,temp1);
+temp1:=subs(expr,temp1);
+temp1:=[solve(temp1,k)];
+temp2:={};
+for i from 1 to nops(temp1) do
+if whattype(evalf(temp1[i]))=float 
+then temp2:=temp2 union {temp1[i]} end if od;
+temp1:={};
+for i from 1 to nops(temp2) do
+if evalf(temp2[i])>0 then temp1:=temp1 union {temp2[i]} end if od;
+temp2:={};
+for i from 1 to nops(temp1) do 
+temp2:=temp2 union {factor(subs(k=temp1[i],expr))}  od;
+return temp2;
+end:
+
+eq:=proc(g)
+local temp1;
+temp1:=eeq(g,[a=1,b=k,c=1/2*sqrt(1+k^2)]);
+if temp1<>{} then print(temp1) end if;
+temp1:=eeq(g,[a=1,b=1,c=k]);
+if temp1<>{} then print(temp1) end if;
+end:
+
+
+
+
+
+#����ƽ�����ӣ�
+delfact:=proc(g)
+local i,temp1,temp2,temp3;
+global tabl;
+
+tabl:=[a^2+b^2,b^2+c^2,c^2+a^2,a, b, c, a+b, b+c, c+a, a+b+c, a^2+b^2+c^2, a+b-c, b+c-a, c+a-b, b^2+a^2-c^2, b^2+c^2-a^2, -b^2+a^2+c^2, -b^4+b^2*a^2+2*b^2*c^2+c^2*a^2-c^4, b^2*c^2+2*c^2*a^2-c^4+b^2*a^2-a^4, 2*b^2*a^2+c^2*a^2-a^4-b^4+b^2*c^2, -b^5*c-a^2*b^4+2*b^3*a^2*c+2*c^3*b^3+2*a^4*b^2-2*a^2*b^2*c^2-b*c^5-a^4*b*c+2*b*a^2*c^3-a^6-a^2*c^4+2*c^2*a^4, -c*a^5-a^4*b^2+2*a^3*c*b^2+2*a^3*c^3+2*a^2*b^4-2*a^2*b^2*c^2-a*c*b^4-c^5*a+2*a*c^3*b^2+2*b^4*c^2-b^2*c^4-b^6, -b*a^5-c^2*a^4+2*b^3*a^3+2*a^3*b*c^2+2*a^2*c^4-2*a^2*b^2*c^2-b^5*a-a*b*c^4+2*a*b^3*c^2-b^4*c^2-c^6+2*b^2*c^4, b^2*a^2+c^2*a^2-a^2*b*c-c^4-b^4+b^3*c+b*c^3, b^2*c^2+b^2*a^2-b^2*c*a-a^4-c^4+c^3*a+c*a^3, c^2*a^2+b^2*c^2-c^2*a*b-b^4-a^4+a^3*b+a*b^3, -b^3+b*a^2-b^2*c+2*c*a*b-c*a^2+b*c^2+c^3, b^2*c-b^2*a+a^3+2*c*a*b+c*a^2-c^2*a-c^3, -b*c^2+c^2*a-a^3+2*c*a*b-b*a^2+b^2*a+b^3, 4*c^3*b^3-2*b*c^5-2*b^5*c-2*a^4*b*c+4*b*a^2*c^3+4*b^3*a^2*c-b^4*c^2-b^2*c^4-2*a^2*b^4+b^6+c^6-2*a^2*c^4+a^4*b^2+c^2*a^4, 4*a^3*c^3-2*c^5*a-2*c*a^5-2*a*c*b^4+4*a*c^3*b^2+4*a^3*c*b^2-c^2*a^4-a^2*c^4-2*a^4*b^2+a^6+c^6-2*b^2*c^4+a^2*b^4+b^4*c^2, 4*b^3*a^3-2*b*a^5-2*b^5*a-2*a*b*c^4+4*a^3*b*c^2+4*a*b^3*c^2-a^2*b^4-a^4*b^2-2*b^4*c^2+b^6+a^6-2*c^2*a^4+b^2*c^4+a^2*c^4, b^3-b*a^2+b^2*c+2*c*a*b+c*a^2-b*c^2-c^3, -b^2*c+b^2*a-a^3+2*c*a*b-c*a^2+c^2*a+c^3, b*c^2-c^2*a+a^3+2*c*a*b+b*a^2-b^2*a-b^3,b^11*c^3-4*b^9*c^5+6*b^7*c^7-4*b^5*c^9-4*a^9*b^5+6*a^7*b^7-4*a^5*b^9+a^3*b^11+a^11*b^3+a^11*c^3-4*a^9*c^5+6*a^7*c^7-4*a^5*c^9+a^3*c^11-3*a^9*c*b^4+2*a^7*c*b^6+2*a^5*c*b^8-3*a*c^3*b^10+2*a*c^5*b^8-3*a^3*c*b^10+2*a*c^7*b^6-3*a*c^9*b^4+a^11*c*b^2+a*c^11*b^2+a*c*b^12+2*a^7*c^3*b^4-2*a^5*c^3*b^6+5*a^3*c^3*b^8-2*a^3*c^5*b^6+2*a^5*c^5*b^4+2*a^3*c^7*b^4+2*a^7*c^5*b^2+2*a^5*c^7*b^2-3*a^9*c^3*b^2-3*a^3*c^9*b^2-3*b^3*c*a^10+2*b*c^7*a^6+2*b*c^5*a^8-3*b*c^9*a^4+b*c^11*a^2+b*c*a^12-2*b^5*c^3*a^6+2*b^7*c^3*a^4-3*b^9*c^3*a^2+2*b^7*c^5*a^2+2*b^5*c^5*a^4+2*b^5*c^7*a^2-2*b^3*c^5*a^6+2*b^3*c^7*a^4+5*b^3*c^3*a^8-3*b^3*c^9*a^2+b^3*c^11+2*b^5*c*a^8+2*b^7*c*a^6-3*b^9*c*a^4+b^11*c*a^2-3*b*c^3*a^10+2*a^7*b^5*c^2-3*a^3*b^9*c^2+2*a^3*b^7*c^4+2*a^5*b^5*c^4-2*a^3*b^5*c^6+2*a^7*b^3*c^4-2*a^5*b^3*c^6-3*a^9*b^3*c^2+5*a^3*b^3*c^8+2*a^5*b^7*c^2+a*b*c^12+a*b^11*c^2-3*a*b^9*c^4+2*a*b^7*c^6+2*a*b^5*c^8+a^11*b*c^2-3*a^9*b*c^4+2*a^7*b*c^6+2*a^5*b*c^8-3*a^3*b*c^10-3*a*b^3*c^10,b^2*a^2+c^2*a^2-2*a^2*b*c+2*b^2*c^2+2*b^3*c+2*b*c^3-c^4-b^4, b^2*c^2+b^2*a^2-2*b^2*c*a+2*c^2*a^2+2*c^3*a+2*c*a^3-a^4-c^4, c^2*a^2+b^2*c^2-2*c^2*a*b+2*b^2*a^2+2*a^3*b+2*a*b^3-b^4-a^4,-2*b^4+b^2*a^2+4*b^2*c^2+c^2*a^2-2*c^4+a^4, -2*c^4+b^2*c^2+4*c^2*a^2+b^2*a^2-2*a^4+b^4, -2*a^4+c^2*a^2+4*b^2*a^2+b^2*c^2-2*b^4+c^4,-b^6*c^2+2*b^4*c^4+c^2*a^4*b^2-c^6*b^2+2*c^4*a^4-c^6*a^2-c^2*a^6+b^4*c^2*a^2+2*b^4*a^4+c^4*a^2*b^2-a^6*b^2-b^6*a^2,-11*c^4*a^4-4*b^6*c^2-4*c^6*b^2+4*c^6*a^2+10*c^2*a^6+10*a^6*b^2+4*b^6*a^2-18*c^2*a^4*b^2+12*b^4*c^2*a^2+12*c^4*a^2*b^2-3*a^8-11*b^4*a^4+8*b^4*c^4, -11*b^4*a^4-4*c^6*a^2-4*c^2*a^6+4*a^6*b^2+10*b^6*a^2+10*b^6*c^2+4*c^6*b^2-18*b^4*c^2*a^2+12*c^4*a^2*b^2+12*c^2*a^4*b^2-3*b^8-11*b^4*c^4+8*c^4*a^4, -11*b^4*c^4-4*a^6*b^2-4*b^6*a^2+4*b^6*c^2+10*c^6*b^2+10*c^6*a^2+4*c^2*a^6-18*c^4*a^2*b^2+12*c^2*a^4*b^2+12*b^4*c^2*a^2-3*c^8-11*c^4*a^4+8*b^4*a^4,2*b^4*a^4+2*c^2*a^4*b^2-2*a^6*b^2+2*c^4*a^4-2*c^2*a^6+a^8+b^8-2*b^6*a^2-2*b^6*c^2+2*b^4*c^2*a^2+2*b^4*c^4+2*c^4*a^2*b^2-2*c^6*b^2-2*c^6*a^2+c^8,c^8+4*a^8+b^8-2*b^6*c^2-2*c^6*b^2-2*c^6*a^2-8*c^2*a^6-8*a^6*b^2-2*b^6*a^2+8*c^2*a^4*b^2+2*b^4*c^2*a^2+2*c^4*a^2*b^2+2*b^4*c^4+5*c^4*a^4+5*b^4*a^4,c^8+a^8+4*b^8-8*b^6*c^2-2*c^6*b^2-2*c^6*a^2-2*c^2*a^6-2*a^6*b^2-8*b^6*a^2+2*c^2*a^4*b^2+8*b^4*c^2*a^2+2*c^4*a^2*b^2+5*b^4*c^4+2*c^4*a^4+5*b^4*a^4, 4*c^8+a^8+b^8-2*b^6*c^2-8*c^6*b^2-8*c^6*a^2-2*c^2*a^6-2*a^6*b^2-2*b^6*a^2+2*c^2*a^4*b^2+2*b^4*c^2*a^2+8*c^4*a^2*b^2+5*b^4*c^4+5*c^4*a^4+2*b^4*a^4,-4*b^4*a^10+2*b^8*c^6+b^10*a^4-3*b^10*c^4+6*b^6*a^8-3*b^4*c^10-4*b^8*a^6+b^2*a^12+2*b^6*c^8+b^2*c^12-4*b^2*a^10*c^2+3*b^4*a^8*c^2+4*b^2*c^6*a^6-4*c^4*a^10+3*b^2*a^8*c^4-4*c^8*a^6-5*b^2*c^8*a^4+6*c^6*a^8-5*b^8*c^2*a^4+c^10*a^4+4*b^6*c^4*a^4+c^2*a^12+c^2*b^12+4*c^2*b^6*a^6+4*c^6*b^4*a^4,b^8-2*b^6*a^2-2*b^6*c^2+b^4*a^4+2*b^4*c^2*a^2+2*b^4*c^4+2*c^4*a^2*b^2-2*c^6*b^2+c^4*a^4-2*c^6*a^2+c^8,b^12+c^12-17*b^4*c^8+4*b^2*c^8*a^2-8*b^2*c^6*a^4+20*b^4*c^4*a^4+4*b^8*c^2*a^2-8*b^6*c^2*a^4+6*c^8*a^4-4*b^6*a^6-4*b^2*a^6*c^4+2*b^2*c^10-4*b^4*a^6*c^2+a^8*b^4+a^8*c^4-17*b^8*c^4+6*b^8*a^4-4*c^6*a^6+2*b^10*c^2-4*c^10*a^2+28*b^6*c^6-4*b^10*a^2+6*a^8*c^2*b^2,2*b^8-4*b^6*a^2-4*b^6*c^2+b^4*a^4+4*b^4*c^2*a^2+4*b^4*c^4+4*c^4*a^2*b^2-4*c^6*b^2+c^4*a^4-4*c^6*a^2+2*c^8-2*c^2*a^4*b^2+2*a^6*b^2+2*c^2*a^6-a^8, 4*b^4*a^4+4*c^2*a^4*b^2-4*a^6*b^2+c^4*a^4-4*c^2*a^6+2*a^8+2*b^8-4*b^6*a^2-4*b^6*c^2+4*b^4*c^2*a^2+b^4*c^4-2*c^4*a^2*b^2+2*c^6*b^2+2*c^6*a^2-c^8, b^4*c^4+4*c^4*a^2*b^2-4*c^6*b^2+4*c^4*a^4-4*c^6*a^2+2*c^8+b^4*a^4+4*c^2*a^4*b^2-4*a^6*b^2-4*c^2*a^6+2*a^8-b^8+2*b^6*a^2+2*b^6*c^2-2*b^4*c^2*a^2,b^8-4*b^6*c^2+b^6*a^2+6*b^4*c^4-2*b^4*a^4-b^4*c^2*a^2+8*c^2*a^4*b^2-3*a^6*b^2-4*c^6*b^2-c^4*a^2*b^2-3*c^2*a^6-2*c^4*a^4+3*a^8+c^8+c^6*a^2, 3*b^8-3*b^6*c^2-3*b^6*a^2-2*b^4*c^4+8*b^4*c^2*a^2-2*b^4*a^4+c^6*b^2-c^4*a^2*b^2-c^2*a^4*b^2+a^6*b^2+c^8-4*c^6*a^2+6*c^4*a^4-4*c^2*a^6+a^8, b^8-4*b^6*a^2+b^6*c^2+6*b^4*a^4-2*b^4*c^4-b^4*c^2*a^2-4*a^6*b^2-3*c^6*b^2+8*c^4*a^2*b^2-c^2*a^4*b^2-3*c^6*a^2+3*c^8-2*c^4*a^4+a^8+c^2*a^6,-b^4*a^4+6*c^2*a^4*b^2-2*a^6*b^2-c^4*a^4-2*c^2*a^6+2*a^8+b^8+c^8-4*b^6*c^2-4*c^6*b^2+6*b^4*c^4, 2*b^8-2*b^6*a^2-2*b^6*c^2-b^4*a^4+6*b^4*c^2*a^2-b^4*c^4+a^8+c^8-4*c^6*a^2-4*c^2*a^6+6*c^4*a^4, -b^4*c^4+6*c^4*a^2*b^2-2*c^6*b^2-c^4*a^4-2*c^6*a^2+2*c^8+a^8+b^8-4*a^6*b^2-4*b^6*a^2+6*b^4*a^4,
+b^8-b^6*a^2-2*b^6*c^2+b^4*c^4+2*b^4*c^2*a^2-a^6*b^2+2*c^2*a^4*b^2-c^4*a^2*b^2+a^8-2*c^2*a^6+c^4*a^4, b^4*c^4-b^4*c^2*a^2+b^4*a^4-2*c^6*b^2+2*c^4*a^2*b^2+2*c^2*a^4*b^2-2*a^6*b^2+c^8-c^6*a^2-c^2*a^6+a^8, b^8-b^6*c^2-2*b^6*a^2+2*b^4*c^2*a^2+b^4*a^4-c^6*b^2-c^2*a^4*b^2+2*c^4*a^2*b^2-2*c^6*a^2+c^8+c^4*a^4,b^8-2*b^6*a^2-2*b^6*c^2+2*b^4*a^4+2*b^4*c^2*a^2+b^4*c^4+2*c^2*a^4*b^2-2*a^6*b^2+c^4*a^4-2*c^2*a^6+a^8, b^4*a^4+2*c^2*a^4*b^2-2*a^6*b^2+2*c^4*a^4-2*c^2*a^6+a^8+b^4*c^4+2*c^4*a^2*b^2-2*c^6*b^2-2*c^6*a^2+c^8,b^8*c^2+b^8*a^2-b^7*c*a^2-3*c^6*a^4+c^8*a^2-c^2*a^8+3*c^4*a^6-b^6*c^2*a^2+3*b^5*c*a^4+b^5*c^3*a^2-b*c^7*a^2+b*c*a^8-3*b*c^3*a^6-b^2*c^6*a^2+3*b*c^5*a^4+3*b^2*c^2*a^6-2*b^4*c^2*a^4+b^3*c^5*a^2+4*b^3*c^3*a^4-3*b^3*c*a^6-2*b^2*c^4*a^4-3*b^6*a^4+3*b^4*a^6-b^2*a^8-c^4*b^6-c^6*b^4+c^8*b^2+4*c^5*b^5-2*c^7*b^3-2*c^3*b^7, -b^8*c^2-b^8*a^2-c^6*a^4+c^8*a^2+c^2*a^8-c^4*a^6+3*b^6*c^2*a^2-b^2*c^6*a^2-b^2*c^2*a^6-2*b^4*c^2*a^4+3*b^6*a^4-3*b^4*a^6+b^2*a^8+3*c^4*b^6-3*c^6*b^4+c^8*b^2+4*a^5*c^5-2*c^3*a^7-2*c^7*a^3+3*a^5*b^4*c+a^5*c^3*b^2+4*a^3*b^4*c^3+a^3*b^2*c^5-3*a^3*c*b^6-2*a^2*b^4*c^4-a^7*b^2*c-a*b^2*c^7+3*a*b^4*c^5+a*c*b^8-3*a*b^6*c^3, b^8*c^2+b^8*a^2+3*c^6*a^4-c^8*a^2+c^2*a^8-3*c^4*a^6-b^6*c^2*a^2+3*b^2*c^6*a^2-b^2*c^2*a^6-2*b^2*c^4*a^4-b^6*a^4-b^4*a^6+b^2*a^8-3*c^4*b^6+3*c^6*b^4-c^8*b^2-2*a^7*b^3+4*a^5*b^5-2*a^3*b^7-a^7*b*c^2+3*a^5*b*c^4+a^3*c^2*b^5+4*a^3*c^4*b^3-3*a^3*b*c^6-a*c^2*b^7+3*a*c^4*b^5+a*b*c^8-3*a*c^6*b^3+a^5*b^3*c^2-2*a^2*b^4*c^4,b^2+a*b+a^2-c^2, -b^2+a^2+c^2+a*c, b^2+b*c-a^2+c^2,b^6-2*a^2*b^4-b^4*c^2+a^4*b^2+4*a^2*b^2*c^2-b^2*c^4+c^2*a^4-2*a^2*c^4+c^6, b^4*c^2+4*a^2*b^2*c^2-2*b^2*c^4-c^2*a^4-a^2*c^4+c^6+a^2*b^4-2*a^4*b^2+a^6, -a^2*b^4+4*a^2*b^2*c^2-a^4*b^2+a^2*c^4-2*c^2*a^4+a^6+b^6-2*b^4*c^2+b^2*c^4,-a^4*b^2-c^2*a^4+2*a^4*b*c+4*a^2*b^2*c^2+2*a^2*b^4-2*b*a^2*c^3-2*b^3*a^2*c+2*a^2*c^4-b^6-3*b^2*c^4-c^6-3*b^4*c^2+8*c^3*b^3,a^4*b*c-c^2*a^4-a^4*b^2-2*b^3*a^2*c+2*a^2*c^4+2*a^2*b^4+4*a^2*b^2*c^2-2*b*a^2*c^3+6*c^3*b^3-3*b^4*c^2-b^6-c^6+b^5*c+b*c^5-3*b^2*c^4,2*c^3*b^3+2*b^3*a^2*c+2*b*a^2*c^3-b^5*c-b*c^5-a^4*b*c+b^6-2*a^2*b^4-b^4*c^2-b^2*c^4-2*a^2*c^4+c^6+a^4*b^2+c^2*a^4, 2*a^3*c^3+2*a*c^3*b^2+2*a^3*c*b^2-c^5*a-c*a^5-a*c*b^4+c^6-2*b^2*c^4-a^2*c^4-c^2*a^4-2*a^4*b^2+a^6+b^4*c^2+a^2*b^4, 2*b^3*a^3+2*a^3*b*c^2+2*a*b^3*c^2-b*a^5-b^5*a-a*b*c^4+a^6-2*c^2*a^4-a^4*b^2-a^2*b^4-2*b^4*c^2+b^6+a^2*c^4+b^2*c^4,a^8*c^4+a^8*b^4+b^12+c^12-9*b^4*c^8+6*c^8*a^4-4*b^6*a^6-9*b^8*c^4+6*b^8*a^4-4*c^6*a^6-4*c^10*a^2+16*b^6*c^6+4*b^2*c^8*a^2-4*b^2*c^6*a^4+12*b^4*c^4*a^4+4*b^8*c^2*a^2-4*b^6*c^2*a^4-4*b^2*a^6*c^4-4*b^4*a^6*c^2+4*a^8*c^2*b^2-4*b^10*a^2, b^8*a^4+b^8*c^4+c^12+a^12-9*a^8*c^4+6*a^8*b^4-4*b^6*c^6-9*c^8*a^4+6*b^4*c^8-4*b^6*a^6-4*a^10*b^2+16*c^6*a^6+4*a^8*c^2*b^2-4*b^4*a^6*c^2+12*b^4*c^4*a^4+4*b^2*c^8*a^2-4*b^4*c^6*a^2-4*b^6*c^2*a^4-4*c^4*b^6*a^2+4*b^8*c^2*a^2-4*b^2*c^10, b^4*c^8+c^8*a^4+a^12+b^12-9*b^8*a^4+6*b^8*c^4-4*c^6*a^6-9*a^8*b^4+6*a^8*c^4-4*b^6*c^6-4*b^10*c^2+16*b^6*a^6+4*b^8*c^2*a^2-4*c^4*b^6*a^2+12*b^4*c^4*a^4+4*a^8*c^2*b^2-4*b^2*a^6*c^4-4*b^4*c^6*a^2-4*b^2*c^6*a^4+4*b^2*c^8*a^2-4*c^2*a^10];
+
+temp3:=factor(g);
+if type(temp3,`+`) then return del(temp3) end if;
+if type(temp3,`sqrt`) then return 1 end if;
+temp2:=1;
+temp1:=[op(temp3)];
+for i from 1 to nops(temp1) do
+if type(temp1[i],'sqrt') then temp2:=temp2*temp1[i] end if od;
+temp3:=temp3/temp2;
+if type(temp3,`+`) then return temp3 end if;
+temp2:=1;
+temp1:=[op(temp3)];
+for i from 1 to nops(temp1) do
+if type(temp1[i],`^`) and irem(op(temp1[i])[2],2)=0  then temp2:=temp2*temp1[i] end if;
+if type(temp1[i],`^`) and irem(op(temp1[i])[2],2)=1  then temp2:=temp2*op(temp1[i])[1]^(op(temp1[i])[2]-1) end if od;
+temp3:=temp3/temp2;
+return ddel(temp3);
+end:
+
+ddel:=proc(temp)
+local i,j,temp1,temp2;
+temp2:=1;
+temp1:=[op(temp)];
+for i from 1 to nops(temp1) do
+for j from 1 to nops(tabl) do
+if temp1[i]=tabl[j] then temp2:=temp2*temp1[i] end if;
+if temp1[i]=-tabl[j] then temp2:=-temp2*temp1[i] end if od od;
+return factor(temp/temp2);
+end:
+
+
+del:=proc(temp)
+local i,temp1,temp2;
+temp1:=[coeffs(expand(temp))];
+for i from 1 to nops(temp1) do
+if not type(temp1[i],'integer') then return temp end if od;
+temp1:=temp/igcd(coeffs(expand(temp)));
+temp2:=1;
+for i from 1 to nops(tabl) do
+if temp1=tabl[i] then temp2:=temp2*temp1 end if;
+if temp1=-tabl[i] then temp2:=-temp2*temp1 end if od;
+return factor(temp1/temp2);
+end:
+
+testf:=proc()
+global g;
+g:=unapply(subs(rs,subs(rs,subs(rs,subs(rs,subs(lst,args[1]))))),a,b,c);
+return evalf(g(args[2][1],args[2][2],args[2][3]));
+end:
+
+
+
+
+###########################################3
+###############################################3
+#agl��������
+##################################################3
+############################################3
+
+#����Ϊ����Ԫ���Ҳ��ܺ��в�����
+sd:=proc(expr)
+local f,temp,t;
+t:=op(indets(expr));
+if nops([t])<>3 then lprint(`Variable Number of errors`);return end if;
+f:=unapply(expr,t);
+temp:=expand({f(t[1]+t[3],t[1]+t[2]+t[3],t[3]),f(t[1]+t[2]+t[3],t[3],t[1]+t[3]), f(t[3],t[1]+t[3],t[1]+t[2]+t[3]), f(t[3],t[1]+t[2]+t[3],t[1]+t[3]), f(t[1]+t[3],t[3],t[1]+t[2]+t[3]),f(t[1]+t[2]+t[3],t[1]+t[3],t[3])});
+return temp;
+end:
+
+
+########################33
+#����һ��������,���в�ִ���
+#########################3
+sdd:=proc(expr)
+local i,temp;
+temp:={};
+for i from 1 to nops(expr) do
+temp:=temp union sd(expr[i]) od;
+return temp;
+end:
+
+
+###############################################3
+#����һ��������,���в�ִ�����ɾ��ƽ��������agl����
+#################################################3
+sdsd:=proc(expr)
+local temp;
+global bz;
+bz:=1;
+temp:=agl_test(expr);
+#cond����ʽ�У�z�Ĵ�������Ϊ1;
+
+temp:=sdd(temp);
+
+temp:=delpf(temp);
+
+if bz=-1 then return {} end if;
+temp:=agl_test(temp);
+
+if temp={} then print(`The inequality holds.`);return {} end if; 
+lprint(nops(temp));
+return temp;
+end:
+
+
+
+sdsd_tst:=proc(expr)
+local temp;
+global bz;
+bz:=1;
+if expr={} then return {} end if;
+
+temp:=sdd(expr);
+
+temp:=delpf(temp);
+
+
+if bz=-1 then return {} end if;
+
+
+if temp={} then print(`The inequality holds.`);return {} end if; 
+lprint(nops(temp));
+return temp;
+end:
+
+##############################
+#�Ȳ����Ƿ񲻳�����
+#############################
+test:=proc(expr)
+local i,temp;
+global bz;
+i:=1;
+temp:=sdsd_tst(expr);
+if temp={} then return {} end if;
+
+while 1<2 do 
+print(i);
+i:=i+1;
+if expr={} then return {} end if;
+temp:=sdsd_tst(temp);
+if bz=-1 then return {} end if;
+od;
+return;
+end:
+
+
+
+
+
+
+
+
+
+
+del1:=proc(expr)
+local temp;
+if expr={} then return {} end if;
+if not has(-1,map(signum,[coeffs(expand(expr[1]))])) then return {} end if;
+return expr;
+end:
+
+del2:=proc(expr)
+local temp;
+if expr={} then return {} end if;
+if not has(1,map(signum,[coeffs(expand(expr[2]))])) then return {} end if;
+return expr;
+end:
+
+
+#################33
+#ɾ��������������ƽ����
+#####################
+
+delpf_d:=proc(expr)
+local temp;
+temp:=del1(expr);
+if temp={} then return {} end if;
+temp:=del2(temp);
+if temp={} then return {} end if;
+return expr;
+end:
+
+############################################3
+#ɾ�������鼯��ƽ���ߣ�����ѡ�������ߣ�
+#########################################33
+
+delpf:=proc(expr)
+local i,temp,temp1;
+global bz;
+#if expr={} then return end if;
+for i from 1 to nops(expr) do
+if not has(1,map(signum,[coeffs(expand(expr[i][1]))])) and (not has(-1,map(signum,[coeffs(expand(expr[i][2]))]))) then lprint(expr[i]);print(`The inequality doesn't old.`);bz:=-1;return {} end if od;
+temp:={};
+for i from 1 to nops(expr) do
+temp1:=delpf_d(expr[i]);
+if temp1={} then temp:=temp union temp1
+else temp:=temp union {temp1} end if od;
+return temp;
+end:
+
+
+#################33
+#�����������еĶ�����������
+#####################
+
+delzs:=proc(expr)
+local i,temp;
+if expr={} then return expr end if;
+temp:={};
+for i from 1 to nops(expr) do
+if has(-1,map(signum,[coeffs(expand(expr[i][2]))])) then
+temp:=temp union {expr[i]} end if od;
+return temp;
+end:
+
+
+
+
+
+###############################
+#�������agg,����-1����������������
+###############################3333
+agg:=proc(expr)
+local i,temp1,temp2;
+global cond;
+cond:=expr[2];
+temp1:={expr[1]};
+temp2:={};
+while temp1<>{} do 
+temp1:=di(temp1);
+for i from 1 to nops(temp1) do 
+if degree(temp1[i],z)<2 then 
+temp2:=temp2 union {temp1[i]};
+end if;
+od;
+temp1:=temp1 minus temp2;
+end do;
+if temp2={} then return -1 end if;
+return 1;
+end:
+
+###########################3
+#ag��agg��Ҫ�������ģ��
+############################3
+di:=proc(g)
+local temp,sq,i;
+temp:={};
+for i from 1 to nops(g) do 
+sq:=expand(quo(g[i],cond,z));
+if has(-1,map(signum,[coeffs(expand(sq))]))  
+then temp:=temp union {sq} end if;
+sq:=expand(rem(g[i],cond,z));
+if has(-1,map(signum,[coeffs(expand(sq))]))  
+then temp:=temp union {sq} end if;
+od;
+#print(nops(temp));
+return temp;
+end:
+
+#####################333
+#��agl�ɲ��Ե��ҳ�,��Ҫע��z�Ĵ���
+#########################3
+agl_test:=proc(expr)
+local temp,i;
+temp:={};
+for i from 1 to nops(expr) do 
+if agg(expr[i])=1 
+then temp:=temp union {expr[i]} end if od;
+return temp;
+end:
+
+###############3333
+#��������agl��Ч��cond������
+#####################33
+ag:=proc(g)
+local i,temp,temp1;
+global temp2,cond;
+temp1:={g};
+temp2:={};
+while temp1<>{} do 
+temp1:=di(temp1);
+for i from 1 to nops(temp1) do 
+if degree(temp1[i],z)<2 then 
+temp2:=temp2 union {temp1[i]};
+end if;
+od;
+temp1:=temp1 minus temp2;
+end do;
+if temp2={} then 
+print(`The inequality holds.`); 
+return;
+end if;
+temp1:={};
+for i from 1 to nops(temp2) do
+temp1:=temp1 union {coeffs(expand(temp2[i]),z)} od;
+temp2:=gtmns(temp1);
+print(temp2);
+end:
