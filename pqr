@@ -28,11 +28,10 @@ if factor(subs({p = a + b + c, q = b*a + c*a + c*b, r = b*a*c}, pqr(f) - f)) = 0
 else false; end if; end proc:
 
 #####################################Another pqr program by BQ sir##########################################################################
-####Link: https://artofproblemsolving.com/community/c6h344550p1843146 ######################################################################
 
 
 print("==========================================================");
-print("Copyright(C) 2006-2010 by bao qian Liu,E_mail:wshr987@163.com ");
+print("Copyright(C) 2006-2010 by bao qian Liu");
 print("==========================================================");
 
 
