@@ -1,5 +1,5 @@
 print("==========================================================");
-print("Copyright(C) 2009 by bao qian Liu,E_mail:wshr987@163.com ");
+print("Copyright(C) 2009 by bao qian Liu ");
 print("==========================================================");
 
 print("if Inequality forms is a>=b,first run auto(a-b), then run agl(w1) or agl(-w1).");
