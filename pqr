@@ -1,0 +1,28 @@
+print(`==========================================================`);
+print("Copyright(C) 2019-2020 by tthnew");
+print("pqr,tj");
+print(`==========================================================`);
+sgm := proc(f) 
+global f1, f2, f3; 
+f1 := f; 
+f2 := subs({a = b, b = c, c = a,x=y,y=z,z=x}, f1); 
+f3 := subs({a = b, b = c, c = a,x=y,y=z,z=x}, f2); 
+subs(f1 + f2 + f3); end proc:
+pro := proc(f) 
+global f1, f2, f3; 
+f1 := f; 
+f2 := subs({a = b, b = c, c = a,x=y,y=z,z=x}, f1); 
+f3 := subs({a = b, b = c, c = a,x=y,y=z,z=x}, f2); 
+subs(f1*f2*f3); end proc:
+pqr := proc(f) 
+local var, temp1, temp2, a, b, c; 
+var := indets(f); a := var[1]; b := var[2]; c := var[3]; 
+temp1 := convert(f*(a + b + c)^3, elsymfun); 
+temp2 := subs({a*b + c*a + b*c = q, a + b + c = p, c = r/(a*b)}, temp1); 
+factor(temp2/p^3); end proc:
+tj := proc(f) 
+local var, a, b, c; 
+var := indets(f); 
+a := var[1]; b := var[2]; c := var[3]; 
+if factor(subs({p = a + b + c, q = b*a + c*a + c*b, r = b*a*c}, pqr(f) - f)) = 0 then true;
+else false; end if; end proc:
