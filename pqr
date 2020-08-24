@@ -26,3 +26,519 @@ var := indets(f);
 a := var[1]; b := var[2]; c := var[3]; 
 if factor(subs({p = a + b + c, q = b*a + c*a + c*b, r = b*a*c}, pqr(f) - f)) = 0 then true;
 else false; end if; end proc:
+
+#####################################Another pqr program by BQ sir##########################################################################
+####Link: https://artofproblemsolving.com/community/c6h344550p1843146 ######################################################################
+
+
+print("==========================================================");
+print("Copyright(C) 2006-2010 by bao qian Liu,E_mail:wshr987@163.com ");
+print("==========================================================");
+
+
+
+pe4_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3,dd4;
+dd1:=x1+x2+x3+x4;
+dd2:=x1*x2+x2*x3+x3*x4+x1*x4+x1*x3+x2*x4;
+dd3:=x1*x3*x4+x1*x2*x4+x1*x2*x3+x2*x3*x4;
+dd4:=x1*x2*x3*x4;
+tj1:={d1=1,d2=1,d3=1,d4=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4};
+h:=[op(expand((d1+d2+d3+d4)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pe4:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4};
+for i from 1 to deg do temp:=temp,op(pe4_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+end:
+
+
+
+
+pel4_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3,dd4,dd21,dd31,dd41;
+dd1:=x1+x2+x3+x4;
+dd2:=x1*x2+x2*x3+x3*x4+x1*x4+x1*x3+x2*x4;
+dd3:=x1*x3*x4+x1*x2*x4+x1*x2*x3+x2*x3*x4;
+dd4:=x1*x2*x3*x4;
+dd21:=x1*x3+x2*x4;
+dd31:=x1^2*x2+x2^2*x3+x3^2*x4+x4^2*x1;
+dd41:=x1^3*x2+x2^3*x3+x3^3*x4+x4^3*x1;
+tj1:={d1=1,d2=1,d3=1,d4=1,d21=1,d31=1,d41=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d21=dd21,d31=dd31,d41=dd41};
+h:=[op(expand((d1+d2+d3+d4+d21+d31+d41)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pel4:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d21=dd21,d31=dd31,d41=dd41};
+for i from 1 to deg do temp:=temp,op(pel4_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+end:
+
+
+#############
+
+
+
+pe5_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3,dd4,dd5;
+dd1:=x1+x2+x3+x4+x5;
+dd2:=x1*x2+x2*x3+x3*x4+x4*x5+x5*x1+x1*x3+x1*x4+x2*x4+x2*x5+x5*x3;
+dd3:=x1*x3*x4+x1*x2*x3+x2*x5*x3+x2*x4*x5+x1*x5*x3+x2*x3*x4+x1*x2*x5+x1*x4*x5+x3*x4*x5+x1*x2*x4;
+
+dd4:=x4*x5*x3*x1+x4*x5*x1*x2+x3*x2*x4*x5+x5*x2*x3*x1+x1*x2*x3*x4;
+dd5:=x1*x2*x3*x4*x5;
+tj1:={d1=1,d2=1,d3=1,d4=1,d5=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5};
+h:=[op(expand((d1+d2+d3+d4+d5)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pe5:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5};
+for i from 1 to deg do temp:=temp,op(pe5_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+
+end:
+
+
+#############
+
+
+
+pe6_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3,dd4,dd5,dd6;
+dd1:=x1+x2+x3+x4+x5+x6;
+dd2:=x5*x1+x4*x5+x2*x6+x4*x6+x3*x6+x5*x6+x1*x6+x2*x5+x1*x2+x5*x3+x2*x3+x1*x4+x3*x4+x1*x3+x2*x4;
+dd3:=x1*x3*x4+x1*x2*x3+x2*x5*x3+x2*x4*x5+x1*x5*x3+x2*x3*x4+x1*x2*x5+x1*x4*x5+x3*x4*x5+x1*x2*x4+x4*x2*x6+x1*x3*x6+x1*x2*x6+x5*x6*x2+x5*x6*x1+x2*x3*x6+x4*x5*x6+x4*x6*x1+x6*x3*x4+x5*x6*x3;
+dd4:=x4*x5*x3*x1+x4*x5*x1*x2+x3*x2*x4*x5+x5*x2*x3*x1+x1*x3*x4*x6+x2*x1*x4*x6+x4*x2*x5*x6+x5*x1*x4*x6+x5*x6*x2*x3+x1*x2*x6*x3+x1*x3*x5*x6+x5*x6*x3*x4+x1*x2*x5*x6+x2*x3*x4*x6+x1*x2*x3*x4;
+dd5:=x1*x2*x3*x4*x5+x1*x2*x6*x3*x4+x1*x4*x5*x2*x6+x5*x6*x2*x3*x4+x5*x6*x3*x4*x1+x1*x2*x5*x6*x3;
+dd6:=x1*x2*x3*x4*x5*x6;
+tj1:={d1=1,d2=1,d3=1,d4=1,d5=1,d6=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,d6=dd6};
+h:=[op(expand((d1+d2+d3+d4+d5+d6)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pe6:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,d6=dd6};
+for i from 1 to deg do temp:=temp,op(pe6_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+end:
+
+
+##############333
+
+pe7_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3,dd4,dd5,dd6,dd7;
+dd1:=x1+x2+x3+x4+x5+x6+x7;
+dd2:=x4*x6+x4*x5+x2*x6+x1*x7+x1*x6+x1*x2+x1*x3+x1*x4+x1*x5+x2*x3+x2*x4+x2*x7+x2*x5+x3*x4+x3*x7+x3*x6+x3*x5+x5*x7+x5*x6+x4*x7+x6*x7;
+dd3:=x1*x7*x4+x1*x2*x3+x1*x4*x3+x1*x5*x3+x1*x6*x2+x1*x6*x3+x1*x6*x7+x1*x6*x5+x1*x6*x4+x1*x5*x4+x1*x5*x2+x1*x2*x7+x1*x2*x4+x1*x5*x7+x2*x4*x6+x2*x4*x5+x2*x5*x6+x2*x7*x4+x2*x7*x6+x2*x5*x7+x2*x3*x7+x2*x3*x6+x2*x3*x5+x2*x3*x4+x3*x6*x4+x3*x5*x4+x3*x6*x7+x3*x7*x4+x3*x7*x5+x3*x6*x5+x4*x6*x7+x4*x5*x6+x4*x5*x7+x1*x3*x7+x5*x7*x6;
+dd4:=x1*x6*x4*x2+x1*x7*x4*x2+x1*x2*x6*x7+x2*x5*x7*x6+x2*x6*x4*x7+x2*x3*x6*x5+x2*x3*x5*x7+x2*x3*x4*x7+x2*x4*x6*x5+x2*x4*x5*x7+x2*x4*x3*x6+x2*x3*x7*x6+x2*x3*x4*x5+x3*x7*x5*x6+x3*x5*x7*x4+x3*x6*x7*x4+x3*x5*x6*x4+x1*x5*x7*x4+x1*x5*x4*x2+x1*x5*x2*x7+x1*x5*x6*x7+x1*x3*x5*x7+x1*x3*x5*x2+x1*x7*x4*x3+x1*x6*x3*x5+x1*x6*x7*x3+x1*x6*x5*x2+x1*x6*x2*x3+x1*x6*x5*x4+x1*x4*x3*x6+x1*x3*x7*x2+x1*x5*x3*x4+x1*x7*x4*x6+x1*x2*x3*x4+x4*x6*x7*x5;
+dd5:=x1*x2*x3*x4*x5+x1*x7*x4*x6*x5+x2*x3*x5*x7*x4+x2*x3*x4*x7*x6+x2*x4*x6*x5*x7+x1*x6*x5*x4*x3+x1*x6*x7*x4*x2+x1*x6*x3*x5*x7+x1*x6*x2*x3*x5+x1*x6*x7*x3*x2+x1*x6*x5*x2*x7+x1*x5*x3*x4*x7+x1*x7*x4*x3*x6+x1*x6*x5*x4*x2+x1*x5*x3*x7*x2+x1*x7*x4*x2*x3+x3*x7*x5*x6*x4+x1*x7*x4*x2*x5+x1*x6*x4*x2*x3+x2*x3*x7*x6*x5+x2*x3*x5*x4*x6;
+dd6:=x1*x2*x3*x4*x5*x6+x1*x6*x4*x2*x3*x7+x1*x6*x3*x5*x7*x4+x1*x3*x5*x7*x6*x2+x1*x7*x4*x6*x5*x2+x2*x3*x4*x7*x5*x6+x1*x7*x4*x2*x3*x5;
+dd7:=x1*x2*x3*x4*x5*x6*x7;
+tj1:={d1=1,d2=1,d3=1,d4=1,d5=1,d6=1,d7=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,d6=dd6,d7=dd7};
+h:=[op(expand((d1+d2+d3+d4+d5+d6+d7)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pe7:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,d6=dd6,d7=dd7};
+for i from 1 to deg do temp:=temp,op(pe7_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+end:
+
+
+####################33
+
+
+pel3_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3,dd31;
+dd1:=x1+x2+x3;
+dd2:=x1*x2+x2*x3+x3*x1;
+dd3:=x1*x2*x3;
+dd31:=x1^2*x2+x2^2*x3+x3^2*x1;
+tj1:={d1=1,d2=1,d3=1,d31=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d31=dd31};
+h:=[op(expand((d1+d2+d3+d31)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pel3:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3,d31=dd31};
+for i from 1 to deg do temp:=temp,op(pel3_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+end:
+
+
+
+pe3_1:=proc(n,deg)
+local h,temp,i,tj1,tj2;
+global dd1,dd2,dd3;
+dd1:=x1+x2+x3;
+dd2:=x1*x2+x2*x3+x3*x1;
+dd3:=x1*x2*x3;
+tj1:={d1=1,d2=1,d3=1};
+tj2:={d1=dd1,d2=dd2,d3=dd3};
+h:=[op(expand((d1+d2+d3)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+pe3:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh;
+temp:={};
+tj2:={d1=dd1,d2=dd2,d3=dd3};
+for i from 1 to deg do temp:=temp,op(pe3_1(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,d1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return temp1;
+end:
+
+
+##############33
+#3Ԫ
+#############3
+bs3:=proc(g)
+local temp0,temp,ls,gg;
+gg:=subs(x=x1,y=x2,z=x3,a=x1,b=x2,c=x3,g);
+temp0:=pe3(degree(gg));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,a=1,b=1,c=1,{op(collect(temp-gg,[x1,x2,x3,a,b,c],distributed,factor))}));
+if expand(subs(ls,temp-gg))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+bsl3:=proc(g)
+local temp0,temp,ls,gg;
+gg:=subs(x=x1,y=x2,z=x3,a=x1,b=x2,c=x3,g);
+temp0:=pel3(degree(gg));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,d31=dd31,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,a=1,b=1,c=1,{op(collect(temp-gg,[x1,x2,x3,a,b,c],distributed,factor))}));
+if expand(subs(ls,temp-gg))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+
+
+
+
+##############33
+#4Ԫ
+#############3
+bs4:=proc(g)
+local temp0,temp,ls;
+temp0:=pe4(degree(g));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,d4=dd4,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,x4=1,{op(collect(temp-g,[x1,x2,x3,x4],distributed,factor))}));
+if expand(subs(ls,temp-g))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+bsl4:=proc(g)
+local temp0,temp,ls;
+temp0:=pel4(degree(g));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,d4=dd4,d21=dd21,d31=dd31,d41=dd41,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,x4=1,{op(collect(temp-g,[x1,x2,x3,x4],distributed,factor))}));
+if expand(subs(ls,temp-g))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+
+
+##############33
+#5Ԫ
+#############3
+bs5:=proc(g)
+local temp0,temp,ls;
+temp0:=pe5(degree(g));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,x4=1,x5=1,{op(collect(temp-g,[x1,x2,x3,x4,x5],distributed,factor))}));
+if expand(subs(ls,temp-g))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+
+##############33
+#6Ԫ
+#############3
+bs6:=proc(g)
+local temp0,temp,ls;
+temp0:=pe6(degree(g));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,d6=dd6,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,x4=1,x5=1,x6=1,{op(collect(temp-g,[x1,x2,x3,x4,x5,x6],distributed,factor))}));
+if expand(subs(ls,temp-g))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+
+
+##############33
+#7Ԫ
+#############3
+bs7:=proc(g)
+local temp0,temp,ls;
+temp0:=pe7(degree(g));
+temp:=subs(d1=dd1,d2=dd2,d3=dd3,d4=dd4,d5=dd5,d6=dd6,d7=dd7,temp0);
+ls:=solve(subs(x1=1,x2=1,x3=1,x4=1,x5=1,x6=1,x7=1,{op(collect(temp-g,[x1,x2,x3,x4,x5,x6,x7],distributed,factor))}));
+if expand(subs(ls,temp-g))=0 then return subs(ls,temp0) else lprint(false) end if;
+end:
+
+####################33
+#���ݺ�
+################33
+
+fmh:=proc(n)
+local temp,ss,i,j;
+temp:={};
+for i from 1 to n do 
+ss:=0;
+for j from 1 to n do ss:=ss+x||j^i od;
+temp:=temp union {ss} od;
+return temp;
+end:
+
+
+
+
+ssum:=proc(h)
+local i,temp:
+temp:=h[1];
+for i from 2 to nops(h) do temp:=temp+h[i] od;
+return temp:
+end:
+
+
+
+
+pee:=proc(n,deg)
+local h,temp,i,tj1,tj2,ssum;
+global ss1,ss2,ss3,ss4,ss5,ss6,ss7,ss8,w;
+for i from 1 to nops(w) do ss||i:=w[i] od;
+tj1:={};
+for i from 1 to nops(w) do tj1:=tj1 union {s||i=1} od;
+tj2:={};
+for i from 1 to nops(w) do tj2:=tj2 union {s||i=ss||i} od;
+ssum:=0;
+for i from 1 to nops(w) do ssum:=ssum+s||i od;
+h:=[op(expand((ssum)^n))];
+temp:=h[1]/subs(tj1,h[1]);
+for i from 2 to nops(h) do temp:=temp, h[i]/subs(tj1,h[i]) od;
+h:={temp};
+temp:={};
+for i from 1 to nops(h) do if degree(subs(tj2,h[i]))=deg then temp:=temp,h[i] end if od;
+h:={temp} minus {{}};
+return h;
+end:
+#����w����
+pe:=proc(deg)
+local temp,i,tj2,temp1;
+global h,hh,w;
+temp:={};
+tj2:={};
+for i from 1 to nops(w) do tj2:=tj2 union {s||i=ss||i} od;
+for i from 1 to deg do temp:=temp,op(pee(i,deg)) od;
+hh:=[op({temp} minus {{}})];
+h:=subs(tj2,hh);
+temp:=0;
+for i from 1 to nops(hh) do temp:=temp+hh[i] od;
+temp:=[op(sort(temp,s1))];
+temp1:=0;
+for i from 1 to nops(temp) do temp1:=temp1+k||i*temp[i] od;
+return subs(tj2,temp1);
+end:
+
+
+
+
+
+
+
+
+sgm3:=proc(f)
+local g,temp;
+g:=unapply(f,x,y,z,a,b,c);
+temp:=g(x,y,z,a,b,c)+g(y,z,x,b,c,a)+g(z,x,y,c,a,b);
+return temp;
+end:
+
+
+sgm4:=proc(f)
+local g,temp;
+g:=unapply(f,x1,x2,x3,x4);
+temp:=g(x1,x2,x3,x4)+g(x2,x3,x4,x1)+g(x3,x4,x1,x2)+g(x4,x1,x2,x3);
+return temp;
+end:
+
+sgm5:=proc(f)
+local g,temp;
+
+g:=unapply(f,x1,x2,x3,x4,x5);
+temp:=g(x1,x2,x3,x4,x5)+g(x2,x3,x4,x5,x1)+g(x3,x4,x5,x1,x2)+g(x4,x5,x1,x2,x3)+g(x5,x1,x2,x3,x4);
+return temp;
+end:
+
+sgm6:=proc(f)
+local g,temp;
+g:=unapply(f,x1,x2,x3,x4,x5,x6);
+temp:=g(x1,x2,x3,x4,x5,x6)+g(x2,x3,x4,x5,x6,x1)+g(x3,x4,x5,x6,x1,x2)+g(x4,x5,x6,x1,x2,x3)+g(x5,x6,x1,x2,x3,x4)+g(x6,x1,x2,x3,x4,x5);
+return temp;
+end:
+
+sgm7:=proc(f)
+local g,temp;
+g:=unapply(f,x1,x2,x3,x4,x5,x6,x7);
+temp:=g(x1,x2,x3,x4,x5,x6,x7)+g(x2,x3,x4,x5,x6,x7,x1)+g(x3,x4,x5,x6,x7,x1,x2)+g(x4,x5,x6,x7,x1,x2,x3)+g(x5,x6,x7,x1,x2,x3,x4)+g(x6,x7,x1,x2,x3,x4,x5)+g(x7,x1,x2,x3,x4,x5,x6);
+return temp;
+end:
+
+
+
+pf4:=proc(f)
+local g,temp;
+g:=unapply(f,x1,x2,x3,x4);
+temp:=g(x1,x2,x3,x4)+g(x2,x3,x4,x1)+g(x3,x4,x1,x2)+g(x4,x1,x2,x3)+g(x1,x3,x2,x4)+g(x2,x4,x1,x3);
+return temp;
+end:
+pf5:=proc(g)
+local f,temp;
+f:=unapply(g,x1,x2,x3,x4,x5);
+temp:=f(x1,x2,x3,x4,x5)+f(x2,x3,x4,x5,x1)+f(x3,x4,x5,x1,x2)+f(x4,x5,x1,x2,x3)+f(x5,x1,x2,x3,x4)+f(x1,x3,x2,x4,x5)+f(x1,x4,x2,x3,x5)+f(x2,x4,x1,x3,x5)+f(x2,x5,x1,x3,x4)+f(x3,x5,x1,x2,x4):
+return temp;
+end:
+pf6:=proc(g)
+local f,temp;
+f:=unapply(g,x1,x2,x3,x4,x5,x6);
+temp:=f(x1,x2,x3,x4,x5,x6)+f(x2,x3,x4,x5,x6,x1)+f(x3,x4,x5,x6,x1,x2)+f(x4,x5,x6,x1,x2,x3)+f(x5,x6,x1,x2,x3,x4)+f(x6,x1,x2,x3,x4,x5)+f(x1,x3,x2,x4,x5,x6)+f(x1,x4,x2,x3,x5,x6)+f(x1,x5,x2,x3,x4,x6)+f(x2,x4,x1,x3,x5,x6)+f(x2,x5,x1,x3,x4,x6)+f(x2,x6,x1,x3,x4,x5)+f(x3,x5,x1,x2,x4,x6)+f(x3,x6,x1,x2,x4,x5)+f(x4,x6,x1,x2,x3,x5):
+return temp;
+end:
+pf7:=proc(g)
+local f,temp;
+f:=unapply(g,x1,x2,x3,x4,x5,x6,x7);
+temp:=f(x1,x2,x3,x4,x5,x6,x7)+f(x2,x3,x4,x5,x6,x7,x1)+f(x3,x4,x5,x6,x7,x1,x2)+f(x4,x5,x6,x7,x1,x2,x3)+f(x5,x6,x7,x1,x2,x3,x4)+f(x6,x7,x1,x2,x3,x4,x5)+f(x7,x1,x2,x3,x4,x5,x6,x7)+f(x1,x3,x2,x4,x5,x6,x7)+f(x1,x4,x2,x3,x5,x6,x7)+f(x1,x5,x2,x3,x4,x6,x7)+f(x1,x6,x2,x3,x4,x5,x7)+f(x2,x4,x1,x3,x5,x6,x7)+f(x2,x5,x1,x3,x4,x6,x7)+f(x2,x6,x1,x3,x4,x5,x7)+f(x2,x7,x1,x3,x4,x5,x6)+f(x3,x5,x1,x2,x4,x6,x7)+f(x3,x6,x1,x2,x4,x5,x7)+f(x3,x7,x1,x2,x4,x5,x6)+f(x4,x6,x1,x2,x3,x5,x7)+f(x4,x7,x1,x2,x3,x5,x6)+f(x5,x7,x1,x2,x3,x4,x6):
+return temp;
+end:
+schur4:=proc(f)
+local g,temp;
+g:=unapply(f,x1,x2,x3,x4);
+temp:=g(x1,x2,x3,x4)+g(x1,x3,x4,x2)+g(x1,x4,x2,x3)+g(x2,x3,x4,x1)+g(x2,x4,x1,x3)+g(x2,x1,x3,x4)+g(x3,x4,x1,x2)+g(x3,x1,x2,x4)+g(x3,x2,x4,x1)+g(x4,x1,x2,x3)+g(x4,x2,x3,x1)+g(x4,x3,x1,x2);
+return temp;
+end:
+schur5:=proc(g)
+local f,temp;
+f:=unapply(g,x1,x2,x3,x4,x5);
+temp:= f(x1,x2,x3,x4,x5)+f(x1,x3,x4,x5,x2)+f(x1,x4,x5,x2,x3)+f(x1,x5,x2,x3,x4)+f(x1,x2,x4,x3,x5)+f(x1,x3,x5,x2,x4)+f(x2,x3,x4,x5,x1)+f(x2,x4,x5,x1,x3)+f(x2,x5,x1,x3,x4)+f(x2,x1,x3,x4,x5)+f(x2,x3,x5,x4,x1)+f(x2,x4,x1,x3,x5)+f(x3,x4,x5,x1,x2)+f(x3,x5,x1,x2,x4)+f(x3,x1,x2,x4,x5)+f(x3,x2,x4,x5,x1)+f(x3,x4,x1,x5,x2)+f(x3,x5,x2,x4,x1)+f(x4,x5,x1,x2,x3)+f(x4,x1,x2,x3,x5)+f(x4,x2,x3,x5,x1)+f(x4,x3,x5,x1,x2)+f(x4,x5,x2,x1,x3)+f(x4,x1,x3,x5,x2)+f(x5,x1,x2,x3,x4)+f(x5,x2,x3,x4,x1)+f(x5,x3,x4,x1,x2)+f(x5,x4,x1,x2,x3)+f(x5,x1,x3,x2,x4)+f(x5,x2,x4,x1,x3);
+return temp;
+end:
+schur6:=proc(g)
+local f,temp;
+f:=unapply(g,x1,x2,x3,x4,x5,x6);
+temp:=f(x1,x2,x3,x4,x5,x6)+f(x1,x3,x4,x5,x6,x2)+f(x1,x4,x5,x6,x2,x3)+f(x1,x5,x6,x2,x3,x4)+f(x1,x6,x2,x3,x4,x5)+f(x1,x2,x4,x3,x5,x6)+f(x1,x2,x5,x3,x4,x6)+f(x1,x3,x5,x2,x4,x6)+f(x1,x3,x6,x2,x4,x5)+f(x1,x4,x6,x2,x3,x5)+f(x2,x3,x4,x5,x6,x1)+f(x2,x4,x5,x6,x1,x3)+f(x2,x5,x6,x1,x3,x4)+f(x2,x6,x1,x3,x4,x5)+f(x2,x1,x3,x4,x5,x6)+f(x2,x3,x5,x4,x6,x1)+f(x2,x3,x6,x4,x5,x1)+f(x2,x4,x6,x3,x5,x1)+f(x2,x4,x1,x3,x5,x6)+f(x2,x5,x1,x3,x4,x6)+f(x3,x4,x5,x6,x1,x2)+f(x3,x5,x6,x1,x2,x4)+f(x3,x6,x1,x2,x4,x5)+f(x3,x1,x2,x4,x5,x6)+f(x3,x2,x4,x5,x6,x1)+f(x3,x4,x6,x5,x1,x2)+f(x3,x4,x1,x5,x6,x2)+f(x3,x5,x1,x4,x6,x2)+f(x3,x5,x2,x4,x6,x1)+f(x3,x6,x2,x4,x5,x1)+f(x4,x5,x6,x1,x2,x3)+f(x4,x6,x1,x2,x3,x5)+f(x4,x1,x2,x3,x5,x6)+f(x4,x2,x3,x5,x6,x1)+f(x4,x3,x5,x6,x1,x2)+f(x4,x5,x1,x6,x2,x3)+f(x4,x5,x2,x6,x1,x3)+f(x4,x6,x2,x5,x1,x3)+f(x4,x6,x3,x5,x1,x2)+f(x4,x1,x3,x5,x6,x2)+f(x5,x6,x1,x2,x3,x4)+f(x5,x1,x2,x3,x4,x6)+f(x5,x2,x3,x4,x6,x1)+f(x5,x3,x4,x6,x1,x2)+f(x5,x4,x6,x1,x2,x3)+f(x5,x6,x2,x1,x3,x4)+f(x5,x6,x3,x1,x2,x4)+f(x5,x1,x3,x6,x2,x4)+f(x5,x1,x4,x6,x2,x3)+f(x5,x2,x4,x6,x1,x3)+f(x6,x1,x2,x3,x4,x5)+f(x6,x2,x3,x4,x5,x1)+f(x6,x3,x4,x5,x1,x2)+f(x6,x4,x5,x1,x2,x3)+f(x6,x5,x1,x2,x3,x4)+f(x6,x1,x3,x2,x4,x5)+f(x6,x1,x4,x2,x3,x5)+f(x6,x2,x4,x1,x3,x5)+f(x6,x2,x5,x1,x3,x4)+f(x6,x3,x5,x1,x2,x4);
+return temp;
+end:
+
+
+
+
+
