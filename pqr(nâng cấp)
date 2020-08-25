@@ -1,0 +1,18 @@
+pqr := proc (expr) 
+     local var, temp1, temp2, a, b, c, f, g, temp3, temp4;
+     var := indets(expr);
+     a := var[1]; b := var[2]; c := var[3];
+     f := numer(expr);
+     g := denom(expr);
+     temp1 := convert(f*(a+b+c)^3, elsymfun);
+     temp2 := subs({a*b+c*a+b*c = q, a+b+c = p, c = r/(a*b)}, temp1);
+     temp3 := convert(g*(a+b+c)^3, elsymfun);
+     temp4 := subs({a*b+c*a+b*c = q, a+b+c = p, c = r/(a*b)}, temp3);
+    factor(temp2/temp4) 
+end proc:
+
+kpqr:=proc(f,k)
+     local F,deg,i,temp;
+         F:=subs(k = 1, f);
+     return factor(pqr(factor(f-F)/(k-1))*(k-1)+pqr(F));
+end:
