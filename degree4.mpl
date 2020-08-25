@@ -1,6 +1,5 @@
 print(`=====================================================================`);
 print("Automatic proving cyclic inequality degree 4 have one of equality cases occurs when a=b=c");
-print(`Copyright(C) 2020 by tthnew`);
 print(`=====================================================================`);
 prove4:=proc(ineq)
   local exp,i,sj,ff,tt,ff1,g,f:
