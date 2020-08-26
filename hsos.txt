@@ -2,7 +2,7 @@ print("======================================================================");
 print("Copyright(C) 2010-2015 by Deng HE ");
 print("请在maple10或者maple11中运行,其他版本maple对运行及输出有较大影响");
 print([sgm,sym,zsos,fsos]);
-print([Sz*(x+y-2*z)^(2*n)+Sx*(y+z-2*x)^(2*n)+Sy*(z+x-2*y)^(2*n)]);
+print([Sz*(x-y)^(2*n)+Sx*(y-z)^(2*n)+Sy*(z-x)^(2*n)]);
 print("======================================================================");
 
 
@@ -69,12 +69,12 @@ sosjg:=proc(f,h,g,var)
 local Mm3,ff1,ff2,ff,temp,i,te,Mm,tt:tt:=0:
 ff:=f:Mm3:=sosj(h-2*g)[2]:ff1:=unapply(Mm3,x,y,z):
 if type(f, symmfunc(x,y,z)) then Mm3:=subs(solve(subs(x=1,y=1,z=1,{op(collect(ff1(x,y,z)-ff1(y,x,z), [x,y,z],distributed))})),Mm3):fi:
-ff2:=sgm(Mm3*(x+y-2*z)^(2*g)):
+ff2:=sgm(Mm3*(x-y)^(2*g)):
 Mm:=solve(subs(x=1,y=1,z=1,{op(collect(ff2-ff, [x,y,z],distributed))}),indets(Mm3) minus (indets(f) minus {x,y,z})):
 if {Mm}={} then temp:={} else Mm3:=subs(Mm,Mm3):
 for i from 1 to sosj(h-2*g)[1] do Mm3:=numer(subs(MM[i]=0,Mm3)):od:
-if Mm3=0 then temp:={} else temp:={sgm(factor(Mm3)*(x+y-2*z)^(2*g))}:fi:
-if  (indets(ff) minus {x,y,z})<>{} and Mm3<>0 then temp:={sgm(collect(Mm3,[x,y,z],distributed)*(x+y-2*z)^(2*g))}:fi:
+if Mm3=0 then temp:={} else temp:={sgm(factor(Mm3)*(x-y)^(2*g))}:fi:
+if  (indets(ff) minus {x,y,z})<>{} and Mm3<>0 then temp:={sgm(collect(Mm3,[x,y,z],distributed)*(x-y)^(2*g))}:fi:
 if   (indets(ff) minus {x,y,z})={} and degree(Mm3,[x,y,z])>2  then print(var):
 te:={op(expand(Mm3))}:for i from 1 to nops(te) do if evalf(subs(x=1,y=1,z=1,te[i]),5)<0 then tt:=tt+1:fi:od:
 if tt>max(var,0) then temp:={}:fi:fi:fi:
@@ -83,7 +83,7 @@ end:
 
 ######################################################################################################################
 
-#对称的(轮换对称和完全对称)分拆,Sz*(x+y-2*z)^(2*n)+Sx*(y+z-2*x)^(2*n)+Sy*(z+x-2*y)^(2*n),完全对称的时候,得到的Sz关于x,y对称,Sx关于y,z对称,Sy关于z,x对称.命令格式sos1(g,var,va),其中var为人为确定的实数,输出的负系数个数小于var,若需要输出的系数均为正,则var=0,va是对其中解方程组中残余的参数赋值,可取任意值,通常取为0#
+#对称的(轮换对称和完全对称)分拆,Sz*(x-y)^(2*n)+Sx*(y-z)^(2*n)+Sy*(z-x)^(2*n),完全对称的时候,得到的Sz关于x,y对称,Sx关于y,z对称,Sy关于z,x对称.命令格式sos1(g,var,va),其中var为人为确定的实数,输出的负系数个数小于var,若需要输出的系数均为正,则var=0,va是对其中解方程组中残余的参数赋值,可取任意值,通常取为0#
 
 zsos:=proc(g,var)
  local sj,i,j,k,qq,h,temp,tempp,ff,ff1,ff2,Mm3,pp,tt,pq:
@@ -101,16 +101,16 @@ print(Degree=degree(numer(g),[x,y,z,a,b,c])):ff:=subs(a=x,b=y,c=z,numer(g)):for 
                   if qq>1 or (indets(ff) minus {x,y,z})<>{}  then pq:=15:else pq:=80:fi:for i from 1 to pq do tempp:=tempp union sosjg(ff,degree(ff,[x,y,z]),qq,var) od:
 
 
-       if {x,y,z} subset indets(g) and qq=1 and tempp<>{} then print("========================================================="):print([[[[[Sz*(x+y-2*z)^2+Sx*(y+z-2*x)^2+Sy*(z+x-2*y)^2]]]]]):print("========================================================="):if type(subs(a=x,b=y,c=z,f), symmfunc(x,y,z)) then
+       if {x,y,z} subset indets(g) and qq=1 and tempp<>{} then print("========================================================="):print([[[[[Sz*(x-y)^2+Sx*(y-z)^2+Sy*(z-x)^2]]]]]):print("========================================================="):if type(subs(a=x,b=y,c=z,f), symmfunc(x,y,z)) then
 print("If [ x>=y>=z], just need to prove [ Sx>=0, Sy>=0, Sz>=0 ] or [ Sy>=0, Sy+Sx>=0, Sy+Sz>=0 ] or [ Sx>=0 , Sz>=0,  Sx+2*Sy>=0,  Sz+2*Sy>=0 ] or [  Sz>=0,  Sx>=0,  x^2*Sy+y^2*Sx>=0  ]");print("If [Sx+Sy+Sz>=0], just need to prove  [ Sx*Sy+Sy*Sz+Sz*Sx>=0 ] "):fi:
 for i from 1 to nops(tempp) do print("======================================="):print([[[i]]]):print("======================================="):print(tempp[i]):od:
-      elif {x,y,z} subset indets(g) and qq>1 and tempp<>{} then print("========================================================="):print([[[[[Sz*(x+y-2*z)^(2*qq)+Sx*(y+z-2*x)^(2*qq)+Sy*(z+x-2*y)^(2*qq)]]]]]):print("========================================================="):
+      elif {x,y,z} subset indets(g) and qq>1 and tempp<>{} then print("========================================================="):print([[[[[Sz*(x-y)^(2*qq)+Sx*(y-z)^(2*qq)+Sy*(z-x)^(2*qq)]]]]]):print("========================================================="):
 for i to nops(tempp) do print("======================================="):print([[[i]]]):print("======================================="):print(tempp[i]):od:     
-    elif {a,b,c} subset indets(g) and  qq=1 and   tempp<>{} then print("========================================================="):print([[[[[Sc*(a+b-2*c)^2+Sa*(b+c-2*a)^2+Sb*(c+a-2*b)^2]]]]]):print("========================================================="):if type(subs(a=x,b=y,c=z,f), symmfunc(x,y,z)) then print("If [ a>=b>=c], just need to prove [ Sa>=0, Sb>=0, Sc>=0 ] or [  Sb>=0 , Sb+Sa>=0,  Sb+Sc>=0  ] or [  Sa>=0 ,  Sc>=0 ,  Sa+2*Sb>=0 ,  Sc+2*Sb>=0 ] or [  Sc>=0 ,  Sa>=0 ,  a^2*Sb+b^2*Sa>=0  ]");print("If  Sa+Sb+Sc>=0, just need to prove  [  Sa*Sb+Sb*Sc+Sc*Sa>=0 ] "):fi:
+    elif {a,b,c} subset indets(g) and  qq=1 and   tempp<>{} then print("========================================================="):print([[[[[Sc*(a-b)^2+Sa*(b-c)^2+Sb*(c-a)^2]]]]]):print("========================================================="):if type(subs(a=x,b=y,c=z,f), symmfunc(x,y,z)) then print("If [ a>=b>=c], just need to prove [ Sa>=0, Sb>=0, Sc>=0 ] or [  Sb>=0 , Sb+Sa>=0,  Sb+Sc>=0  ] or [  Sa>=0 ,  Sc>=0 ,  Sa+2*Sb>=0 ,  Sc+2*Sb>=0 ] or [  Sc>=0 ,  Sa>=0 ,  a^2*Sb+b^2*Sa>=0  ]");print("If  Sa+Sb+Sc>=0, just need to prove  [  Sa*Sb+Sb*Sc+Sc*Sa>=0 ] "):fi:
 for i to nops(tempp) do print("======================================="):print([[[i]]]):print("======================================="):print(subs(x=a,y=b,z=c,tempp[i])):od:     
-    elif {a,b,c} subset indets(g) and qq>1 and tempp<>{}  then  print("========================================================="):print([[[[[Sc*(a+b-2*c)^(2*qq)+Sa*(b+c-2*a)^(2*qq)+Sb*(c+a-2*b)^(2*qq)]]]]]):print("========================================================="):for i to nops(tempp) do print("======================================="):print([[[i]]]):print("======================================="):print(subs(x=a,y=b,z=c,tempp[i])):od:
-      elif {x,y,z} subset indets(g) and  tempp={} then print("========================================================="):print([[[[[Sz*(x+y-2*z)^(2*qq)+Sx*(y+z-2*x)^(2*qq)+Sy*(z+x-2*y)^(2*qq)]]]]]):print("========================================================="):print(false):
-      elif {a,b,c} subset indets(g) and tempp={} then print("========================================================="):print([[[[[Sc*(a+b-2*c)^(2*qq)+Sa*(b+c-2*a)^(2*qq)+Sb*(c+a-2*b)^(2*qq)]]]]]):print("========================================================="):print(false):
+    elif {a,b,c} subset indets(g) and qq>1 and tempp<>{}  then  print("========================================================="):print([[[[[Sc*(a-b)^(2*qq)+Sa*(b-c)^(2*qq)+Sb*(c-a)^(2*qq)]]]]]):print("========================================================="):for i to nops(tempp) do print("======================================="):print([[[i]]]):print("======================================="):print(subs(x=a,y=b,z=c,tempp[i])):od:
+      elif {x,y,z} subset indets(g) and  tempp={} then print("========================================================="):print([[[[[Sz*(x-y)^(2*qq)+Sx*(y-z)^(2*qq)+Sy*(z-x)^(2*qq)]]]]]):print("========================================================="):print(false):
+      elif {a,b,c} subset indets(g) and tempp={} then print("========================================================="):print([[[[[Sc*(a-b)^(2*qq)+Sa*(b-c)^(2*qq)+Sb*(c-a)^(2*qq)]]]]]):print("========================================================="):print(false):
 fi:od:
 
 print(-1):print(-1):
@@ -170,13 +170,13 @@ exp:=xzfz(deg):
 if type(ff, symmfunc(x,y,z)) then Mm3:=exp[2]:ff1:=unapply(Mm3,x,y,z):
 Mm3:=subs(solve(subs(x=1,y=1,z=1,{op(clet(ff1(x,y,z)-ff1(y,x,z)))})),Mm3):
 else  Mm3:=exp[2]:fi:
-ff2:=sgm(Mm3*(x+y-2*z)^2/ex):
+ff2:=sgm(Mm3*(x-y)^2/ex):
 temp:=solve(subs(x=1,y=1,z=1,{op(collect(numer(ff2-ff),[x,y,z],distributed))}),{seq(MM[i],i=1..exp[1])}):
 if {temp}={} then ff2:={}:
 else Mm3:=subs(temp,Mm3):
 for i from 1 to exp[1] do Mm3:=subs(MM[i]=0,Mm3):od:
-ff2:={sgm(numer(simplify(Mm3/ex))/factor(denom(simplify(Mm3/ex)))*(x+y-2*z)^2)}:
-if  (indets(ff) minus {x,y,z})<>{} then ff2:={sgm(collect(numer(simplify(Mm3/ex)),[x,y,z],distributed,factor)/factor(denom(simplify(Mm3/ex)))*(x+y-2*z)^2)}:fi:
+ff2:={sgm(numer(simplify(Mm3/ex))/factor(denom(simplify(Mm3/ex)))*(x-y)^2)}:
+if  (indets(ff) minus {x,y,z})<>{} then ff2:={sgm(collect(numer(simplify(Mm3/ex)),[x,y,z],distributed,factor)/factor(denom(simplify(Mm3/ex)))*(x-y)^2)}:fi:
 if   (indets(ff) minus {x,y,z})={} and degree(numer(simplify(Mm3/ex)),[x,y,z])>2 then print(var):
 te:={op(expand(numer(simplify(Mm3/ex))))}:
 for i from 1 to nops(te) do if evalf(subs(x=1,y=1,z=1,te[i]),5)<0 then tt:=tt+1:fi:od:
@@ -220,10 +220,10 @@ for j from 1 to pq do exp:=exp union fsosjg(ff,ex[2][i],var) od:
 if exp={} then print(false):print(false):else 
 
 if type(subs(a=x,b=y,c=z,f), symmfunc(x,y,z)) then print("This is a symmetric polynomial!"):else print("This is a cyclic symmetric polynomial!"):fi:
-if   {x,y,z} subset indets(f) then print([[[[[Sz*(x+y-2*z)^2+Sx*(y+z-2*x)^2+Sy*(z+x-2*y)^2]]]]]):print(1):
+if   {x,y,z} subset indets(f) then print([[[[[Sz*(x-y)^2+Sx*(y-z)^2+Sy*(z-x)^2]]]]]):print(1):
 print("If [ x>=y>=z], just need to prove [ Sx>=0, Sy>=0, Sz>=0 ] or [ Sy>=0, Sy+Sx>=0, Sy+Sz>=0 ] or [ Sx>=0 , Sz>=0,  Sx+2*Sy>=0,  Sz+2*Sy>=0 ] or [  Sz>=0,  Sx>=0,  x^2*Sy+y^2*Sx>=0  ]");print("If [Sx+Sy+Sz>=0], just need to prove  [ Sx*Sy+Sy*Sz+Sz*Sx>=0 ] "):
 
-else print([[[[[Sc*(a+b-2*c)^2+Sa*(b+c-2*a)^2+Sb*(c+a-2*b)^2]]]]]):print(1):print("If [ a>=b>=c], just need to prove [ Sa>=0, Sb>=0, Sc>=0 ] or [  Sb>=0 , Sb+Sa>=0,  Sb+Sc>=0  ] or [  Sa>=0 ,  Sc>=0 ,  Sa+2*Sb>=0 ,  Sc+2*Sb>=0 ] or [  Sc>=0 ,  Sa>=0 ,  a^2*Sb+b^2*Sa>=0  ]"):print("If  Sa+Sb+Sc>=0, just need to prove  [  Sa*Sb+Sb*Sc+Sc*Sa>=0 ] "):fi:
+else print([[[[[Sc*(a-b)^2+Sa*(b-c)^2+Sb*(c-a)^2]]]]]):print(1):print("If [ a>=b>=c], just need to prove [ Sa>=0, Sb>=0, Sc>=0 ] or [  Sb>=0 , Sb+Sa>=0,  Sb+Sc>=0  ] or [  Sa>=0 ,  Sc>=0 ,  Sa+2*Sb>=0 ,  Sc+2*Sb>=0 ] or [  Sc>=0 ,  Sa>=0 ,  a^2*Sb+b^2*Sa>=0  ]"):print("If  Sa+Sb+Sc>=0, just need to prove  [  Sa*Sb+Sb*Sc+Sc*Sa>=0 ] "):fi:
 for k from 1 to nops(exp) do 
 print("=========="):print([[k]]):print("=========="):print(exp[k]):
 od:fi:exp:={}:od:
