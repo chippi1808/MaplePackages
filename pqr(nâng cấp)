@@ -1,3 +1,27 @@
+print([pqr,hpqr]);
+sgm:=proc(expr)
+   local rap,ex2,ex3,ex:
+      rap:={x1=x2,x2=x3,x3=x1,a=b,b=c,c=a,A=B,B=C,C=A,x=y,y=z,z=x,u=v,v=w,w=u,ha=hb,hb=hc,hc=ha,Ra=Rb,Rb=Rc,Rc=Ra,ra=rb,rb=rc,rc=ra,ma=mb,mb=mc,mc=ma,wa=wb,wb=wc,wc=wa,ka=kb,kb=kc,kc=ka,
+         HA=HB,HB=HC,HC=HA,IA=IB,IB=IC,
+         IC=IA,Ha=Hb,Hb=Hc,Hc=Ha,A=B,B=C,C=A,Ra=Rb,Rb=Rc,Rc=Ra,GA=GB,GB=GC,
+         GC=GA,JA=JB,JB=JC,JC=JA,ca=cb,cb=cc,cc=ca,Ja=Jb,Jb=Jc,Jc=Ja}:     
+   ex2:=subs(rap,expr):
+   ex3:=subs(rap,ex2):
+   ex:=expr+ex2+ex3:
+   RETURN(ex)
+end:
+
+pro:=proc(expr)
+   local rap,ex2,ex3,ex:
+      rap:={x1=x2,x2=x3,x3=x1,a=b,b=c,c=a,A=B,B=C,C=A,x=y,y=z,z=x,u=v,v=w,w=u,ha=hb,hb=hc,hc=ha,Ra=Rb,Rb=Rc,Rc=Ra,ra=rb,rb=rc,rc=ra,ma=mb,mb=mc,mc=ma,wa=wb,wb=wc,wc=wa,ka=kb,kb=kc,kc=ka,
+         HA=HB,HB=HC,HC=HA,IA=IB,IB=IC,
+         IC=IA,Ha=Hb,Hb=Hc,Hc=Ha,A=B,B=C,C=A,Ra=Rb,Rb=Rc,Rc=Ra,GA=GB,GB=GC,
+         GC=GA,JA=JB,JB=JC,JC=JA,ca=cb,cb=cc,cc=ca,Ja=Jb,Jb=Jc,Jc=Ja}:     
+   ex2:=subs(rap,expr):
+   ex3:=subs(rap,ex2):
+   ex:=expr*ex2*ex3:
+   RETURN(ex)
+end:
 pqr := proc (expr) 
      local var, temp1, temp2, a, b, c, f, g, temp3, temp4;
      var := indets(expr);
@@ -16,3 +40,11 @@ kpqr:=proc(f,k)
          F:=subs(k = 1, f);
      return factor(pqr(factor(f-F)/(k-1))*(k-1)+pqr(F));
 end:
+hpqr := proc (f) 
+local var, a, b, c, temp, expr; 
+expr := numer(f); 
+var := indets(expr); a := var[1]; b := var[2]; c := var[3]; 
+temp := subs({a = b, b = a}, expr); 
+     if degree(expr) = 3 then (factor((1/2)*(expr-temp)/pro(a-b))*pro(a-b)+pqr((1/2)*expr+(1/2)*temp))/pqr(denom(f)) ;
+     else (pqr(factor((1/2)*(expr-temp)/pro(a-b)))*pro(a-b)+pqr((1/2)*expr+(1/2)*temp))/pqr(denom(f)); end if: 
+end proc:
