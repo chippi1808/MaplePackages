@@ -1,3 +1,0 @@
-getEqs:=proc(eq,var)
-solve(map(t->t=0,(subs(map(t->t=1,{op(var)}),{op(collect(lhs(eq)-rhs(eq),var,distributed,factor))}))));
-end:
