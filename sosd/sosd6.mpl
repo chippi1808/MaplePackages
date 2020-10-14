@@ -8,3 +8,9 @@ sosd6:=proc(expr,x)
 	if {sol}<>{} then return (subs(sol,FF));
 	else return false;fi;
 end:
+
+#This is testing tool many inequality can not give SOS. Example:
+
+f:=x^6-x^5-x^4+x^3+x^2+x+1;
+
+sosd6(f);
