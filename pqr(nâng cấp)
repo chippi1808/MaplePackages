@@ -1,4 +1,8 @@
-print([pqr,hpqr]);
+print("==================================================");
+print("This program was be written by tthnew");
+print("Copyright (C) 2020");
+print("[pqr,hpqr]");
+print("==================================================");
 sgm:=proc(expr)
    local rap,ex2,ex3,ex:
       rap:={x1=x2,x2=x3,x3=x1,a=b,b=c,c=a,A=B,B=C,C=A,x=y,y=z,z=x,u=v,v=w,w=u,ha=hb,hb=hc,hc=ha,Ra=Rb,Rb=Rc,Rc=Ra,ra=rb,rb=rc,rc=ra,ma=mb,mb=mc,mc=ma,wa=wb,wb=wc,wc=wa,ka=kb,kb=kc,kc=ka,
